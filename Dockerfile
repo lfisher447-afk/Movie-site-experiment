@@ -1,29 +1,30 @@
-# Stage 1: Build & Dependencies
-FROM node:18-alpine AS builder
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Stage 2: Production Engine
+# Use Node 18 Alpine for high performance and small image size
 FROM node:18-alpine
 
+# Set the working directory
 WORKDIR /usr/src/app
 
-# Install PM2 globally in the production image
-RUN npm install -g pm2
+# Copy package info
+# This copies package.json (and package-lock.json if you generate one later)
+COPY package*.json ./
 
-# Copy production node_modules from builder
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+# 10X FIX: We use 'npm install' with '--omit=dev' because a lockfile wasn't found.
+# This ensures a fast, production-only install without the strict lockfile requirement.
+RUN npm install --omit=dev
 
-# Copy app files
-COPY package.json ecosystem.config.js ./
-COPY api/ ./api/
-COPY public/ ./public/
+# Copy the rest of the application code
+# This includes your 'api' and 'public' folders
+COPY . .
 
-# Expose Port
-EXPOSE ${PORT:-3000}
+# Expose Port 3000 (Synchronized with Railway Networking and your index.js)
+EXPOSE 3000
 
-# Start the application using PM2 runtime
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+# Health check to ensure the engine is responsive
+# It checks the endpoint defined in your index.js
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
+
+# Command to run the application
+# This triggers the "start" script in your package.json:
+# "pm2-runtime start ecosystem.config.js"
+CMD ["npm", "start"]
