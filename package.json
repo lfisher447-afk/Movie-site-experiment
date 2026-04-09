@@ -1,7 +1,11 @@
 {
   "name": "teneflix-core",
   "version": "1.0.0",
+  "description": "Omega Engine - High Performance Streaming Core",
   "main": "api/index.js",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js",
     "dev": "nodemon api/index.js"
@@ -16,5 +20,8 @@
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
     "pm2": "^5.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
