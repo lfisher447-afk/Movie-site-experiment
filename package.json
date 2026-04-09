@@ -1,12 +1,10 @@
 {
-  "name": "teneflix-omega-engine",
-  "version": "10.0.0",
-  "description": "Advanced Next-Gen Streaming Server with TMDB Proxy",
+  "name": "teneflix-core",
+  "version": "1.0.0",
   "main": "api/index.js",
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js",
-    "dev": "nodemon api/index.js",
-    "lint": "eslint ."
+    "dev": "nodemon api/index.js"
   },
   "dependencies": {
     "axios": "^1.6.8",
@@ -18,11 +16,5 @@
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
     "pm2": "^5.3.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
-  },
-  "engines": {
-    "node": ">=18.x"
   }
 }
